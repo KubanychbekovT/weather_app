@@ -2,38 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
-List<Map<String, dynamic>> containerData = [
-  {
-    'image': 'assets/images/cloudy.svg',
-    'time': '12:00 PM',
-    'temperature': '25°C',
-  },
-  {
-    'image': 'assets/images/rainy.svg',
-    'time': '03:00 PM',
-    'temperature': '28°C',
-  },
-  {
-    'image': 'assets/images/snowy.svg',
-    'time': '06:00 PM',
-    'temperature': '23°C',
-  },
-  {
-    'image': 'assets/images/sorm.svg',
-    'time': '09:00 PM',
-    'temperature': '20°C',
-  },
-];
-
 class HourlyWeather extends StatelessWidget {
-  const HourlyWeather({super.key});
+  const HourlyWeather({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final List<Map<String, dynamic>> containerData = [
+      {
+        'image': 'assets/images/cloudy.svg',
+        'time': DateFormat('hh:mm a').format(DateTime.now()),
+        'temperature': '25°C',
+      },
+      {
+        'image': 'assets/images/rainy.svg',
+        'time': DateFormat('hh:mm a').format(DateTime.now().add(Duration(hours: 3))),
+        'temperature': '28°C',
+      },
+      {
+        'image': 'assets/images/snowy.svg',
+        'time': DateFormat('hh:mm a').format(DateTime.now().add(Duration(hours: 6))),
+        'temperature': '23°C',
+      },
+      {
+        'image': 'assets/images/storm.svg',
+        'time': DateFormat('hh:mm a').format(DateTime.now().add(Duration(hours: 9))),
+        'temperature': '20°C',
+      },
+    ];
 
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: List.generate(containerData.length, (index) {
+        final data = containerData[index];
+        final time = data['time'];
+        final temperature = data['temperature'];
+
         return Container(
           decoration: BoxDecoration(
             color: const Color(0xff642ff3),
@@ -45,19 +48,24 @@ class HourlyWeather extends StatelessWidget {
             children: [
               const SizedBox(height: 5),
               Container(
-                  height: 45,
-                  width: 60,
-                  child: SvgPicture.asset(containerData[index]
-                  ['image']
-                  )),
+                height: 45,
+                width: 60,
+                child: SvgPicture.asset(data['image']),
+              ),
               const SizedBox(height: 30),
-              Text(containerData[index]['time'], style: const TextStyle(color: Colors.white, fontSize: 12),),
+              Text(
+                time,
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
               const SizedBox(height: 5),
-              Text(containerData[index]['temperature'], style: const TextStyle(color: Colors.white, fontSize: 16)),
+              Text(
+                temperature,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+              ),
             ],
           ),
         );
-      })
+      }),
     );
   }
 }
