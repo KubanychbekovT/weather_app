@@ -7,52 +7,28 @@ import 'package:weather/presentation/weather/widgets/hourly_details.dart';
 import 'widgets/weather_stat.dart';
 
 class WeatherOverviewPage extends StatefulWidget {
-  const WeatherOverviewPage({super.key});
+  const WeatherOverviewPage({Key? key}) : super(key: key);
 
   @override
-  State<WeatherOverviewPage> createState() => _WeatherOverviewPageState();
+  _WeatherOverviewPageState createState() => _WeatherOverviewPageState();
 }
 
 class _WeatherOverviewPageState extends State<WeatherOverviewPage>
     with SingleTickerProviderStateMixin {
-
-  //String selectedCity = 'Bishkek';
   late TabController _tabController;
-
   WeatherApiClient client = WeatherApiClient();
   Weather? data;
-  String selectedCity = '';
+  String selectedCity = 'Bishkek';
 
   Future<Weather?> getData() async {
     return client.getCurrentWeather(selectedCity);
   }
-
-
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     fetchData(selectedCity);
-    // client.getCurrentWeather('Moscow');
-    //_tabController.addListener(_handleTabSelection);
-  }
-
-
-  // void _handleTabSelection() {
-  //   if (_tabController.index == 1) {
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => SearchPage()),
-  //     );
-  //   }
-  // }
-
-  Future<void> fetchData(String city) async {
-    Weather? weather = await client.getCurrentWeather(city);
-    setState(() {
-      data = weather;
-    });
   }
 
   @override
@@ -61,11 +37,38 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
     _tabController.dispose();
   }
 
+  void fetchData(String city) async {
+    Weather? weather = await client.getCurrentWeather(city);
+    setState(() {
+      data = weather;
+    });
+  }
+
   void onCitySelected(String city) {
     setState(() {
       selectedCity = city; // Обновление выбранного города
     });
     fetchData(selectedCity); // Обновление погодных данных
+  }
+
+  String _getMonthName(int month) {
+    final months = [
+      '', // Пустая строка для компенсации индексации, так как месяцы в DateTime начинаются с 1
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+
+    return months[month];
   }
 
   @override
@@ -82,17 +85,17 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Today, 13 June",
-                      style: TextStyle(
+                      "Today, ${DateTime.now().day} ${_getMonthName(DateTime.now().month)}",
+                      style: const TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.w500),
                     ),
                     Text(
-                      "Bishkek",
-                      style: TextStyle(
+                      selectedCity,
+                      style: const TextStyle(
                           color: Color(0xff3d4a73),
                           fontSize: 22,
                           fontWeight: FontWeight.bold),
@@ -143,26 +146,27 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                           width: 0.5,
                           color: Colors.grey,
                         ),
-                        weatherStatWidget("Humidity", "${snapshot.data!.humidity}"),
+                        weatherStatWidget(
+                            "Humidity", "${snapshot.data!.humidity}"),
                       ],
                     ),
                   );
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
-                  return const Text('No Data', style: TextStyle(color: Colors.red, fontSize: 24), );
+                  return const Text(
+                    'No Data',
+                    style: TextStyle(color: Colors.red, fontSize: 24),
+                  );
                 }
               } else {
                 return const CircularProgressIndicator();
               }
             },
           ),
-
           SizedBox(height: 20),
-
           Search(onCitySelected: onCitySelected),
-
-          const SizedBox(height:40),
+          const SizedBox(height: 40),
           Expanded(
             child: Container(
               width: MediaQuery.of(context).size.width,
@@ -213,13 +217,13 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
               unselectedLabelColor: Colors.black54,
               labelStyle: const TextStyle(fontSize: 10),
               indicator: const UnderlineTabIndicator(
-                  //borderRadius: BorderSide(color: Colors.black54, width: 0.0),
-                  insets: EdgeInsets.fromLTRB(
-                50,
-                0,
-                50,
-                48,
-              )),
+                insets: EdgeInsets.fromLTRB(
+                  50,
+                  0,
+                  50,
+                  48,
+                ),
+              ),
               indicatorColor: Colors.black54,
               tabs: const <Widget>[
                 Tab(
