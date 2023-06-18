@@ -15,11 +15,11 @@ class WeatherApiClient {
     var body = jsonDecode(response.body);
     return Weather.fromJson(body);
   } else {
-      print('Request failed with status: ${response.statusCode}');
+      //print('Request failed with status: ${response.statusCode}');
       return null;
     }
 } catch (e) {
-  print('Error: $e');
+  //print('Error: $e');
   return null;
   }
 }

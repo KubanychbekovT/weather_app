@@ -151,11 +151,12 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                       ],
                     ),
                   );
-                } else if (snapshot.hasError) {
+                // } else if (snapshot.hasError) { else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
+                //   return Text('Error: ${snapshot.error}');
                 } else {
                   return const Text(
-                    'No Data',
+                    'Error',
                     style: TextStyle(color: Colors.red, fontSize: 24),
                   );
                 }
