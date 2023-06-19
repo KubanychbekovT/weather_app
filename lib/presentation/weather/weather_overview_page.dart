@@ -4,6 +4,7 @@ import 'package:weather/application/services/weather_api_client.dart';
 import 'package:weather/domain/models/weather_model.dart';
 import 'package:weather/presentation/search/search.dart';
 import 'package:weather/presentation/weather/widgets/hourly_details.dart';
+import '../../domain/core/failures.dart';
 import 'widgets/weather_stat.dart';
 
 class WeatherOverviewPage extends StatefulWidget {
@@ -15,6 +16,7 @@ class WeatherOverviewPage extends StatefulWidget {
 
 class _WeatherOverviewPageState extends State<WeatherOverviewPage>
     with SingleTickerProviderStateMixin {
+
   late TabController _tabController;
   WeatherApiClient client = WeatherApiClient();
   Weather? data;
@@ -130,6 +132,8 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasData) {
+                  double? kelvin = snapshot.data!.temp;
+                  double celsius = kelvin! - 273.15;
                   return SizedBox(
                     height: 50,
                     width: double.infinity,
@@ -141,7 +145,7 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                           width: 0.5,
                           color: Colors.grey,
                         ),
-                        weatherStatWidget("Temp", "${snapshot.data!.temp}"),
+                        weatherStatWidget("Temp", "$celsius°C"),
                         Container(
                           width: 0.5,
                           color: Colors.grey,
@@ -151,14 +155,16 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                       ],
                     ),
                   );
-                // } else if (snapshot.hasError) { else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                //   return Text('Error: ${snapshot.error}');
-                } else {
-                  return const Text(
-                    'Error',
-                    style: TextStyle(color: Colors.red, fontSize: 24),
-                  );
+                } else if (snapshot.hasError) {
+                  if (snapshot.error is ServerFailure) {
+                    final serverFailure = snapshot.error as ServerFailure;
+                    return Text('Error: ${serverFailure.error}');
+                  } else {
+                    return Text('Error: ${snapshot.error}');
+                  }
+                }
+                else {
+                  return const Text('{"cod":"404","message":"city not found"}');
                 }
               } else {
                 return const CircularProgressIndicator();
