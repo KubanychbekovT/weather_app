@@ -221,7 +221,7 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                       ),
                       GestureDetector(
                         onTap: () => Navigator.push(context, MaterialPageRoute(
-                            builder: (_) => const ForecastPage(),)),
+                            builder: (_) =>  ForecastPage(selectedCity: selectedCity),)),
                         child: Row(
                           children: [
                             const Text(

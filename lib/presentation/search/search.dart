@@ -17,6 +17,8 @@ class _SearchState extends State<Search> {
   WeatherApiClient client = WeatherApiClient();
   Weather? weather;
 
+
+
   void searchCity(String city) async {
     if (city.isNotEmpty) {
       widget.onCitySelected(city);

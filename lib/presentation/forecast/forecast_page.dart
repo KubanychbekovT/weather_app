@@ -3,7 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ForecastPage extends StatefulWidget {
-  const ForecastPage({Key? key}) : super(key: key);
+  final String selectedCity;
+
+  const ForecastPage({Key? key, required this.selectedCity}) : super(key: key);
 
   @override
   _ForecastPageState createState() => _ForecastPageState();
@@ -20,11 +22,13 @@ class _ForecastPageState extends State<ForecastPage> {
 
   Future<void> fetchWeatherData() async {
     const apiKey = '4fc48c421a302cd92905b289e1dcd3b6&cnt';
-    const location = 'Bishkek';
     final apiUrl =
-        'https://api.openweathermap.org/data/2.5/forecast?q=$location&appid=4fc48c421a302cd92905b289e1dcd3b6&cnt=7';
+        'https://api.openweathermap.org/data/2.5/forecast?q=${widget.selectedCity}&appid=4fc48c421a302cd92905b289e1dcd3b6&cnt=7';
 
-    final response = await http.get(Uri.parse(apiUrl));
+    // Остальной код метода fetchWeatherData...
+
+
+  final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
