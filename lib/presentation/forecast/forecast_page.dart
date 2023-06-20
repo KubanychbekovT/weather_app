@@ -25,7 +25,6 @@ class _ForecastPageState extends State<ForecastPage> {
     final apiUrl =
         'https://api.openweathermap.org/data/2.5/forecast?q=${widget.selectedCity}&appid=4fc48c421a302cd92905b289e1dcd3b6&cnt=7';
 
-    // Остальной код метода fetchWeatherData...
 
 
   final response = await http.get(Uri.parse(apiUrl));
@@ -47,7 +46,7 @@ class _ForecastPageState extends State<ForecastPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffecf3fe),
+      backgroundColor: const Color(0xff5a1bee),
       body: ListView.builder(
         itemCount: weatherData.length,
         itemBuilder: (context, index) {
@@ -68,6 +67,7 @@ class _ForecastPageState extends State<ForecastPage> {
                     fontSize: 18,
                     fontWeight: FontWeight.bold),
               ),
+              
               subtitle: Text(
                 'Temperature: ${weather.temperature}°C',
                 style: TextStyle(
