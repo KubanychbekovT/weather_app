@@ -6,9 +6,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red,
-      width: 40,
-      height: 40,
+      color: Color(0xffecf3fe),
     );
   }
 }

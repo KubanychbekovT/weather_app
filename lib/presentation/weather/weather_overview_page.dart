@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:weather/application/services/weather_api_client.dart';
 import 'package:weather/domain/models/weather_model.dart';
+import 'package:weather/presentation/forecast/forecast_page.dart';
 import 'package:weather/presentation/search/search.dart';
+import 'package:weather/presentation/settings/settings.dart';
 import 'package:weather/presentation/weather/widgets/hourly_details.dart';
 import '../../domain/core/failures.dart';
 import 'widgets/weather_stat.dart';
@@ -29,7 +31,7 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     fetchData(selectedCity);
   }
 
@@ -53,6 +55,8 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
     fetchData(selectedCity); // Обновление погодных данных
   }
 
+
+
   String _getMonthName(int month) {
     final months = [
       '', // Пустая строка для компенсации индексации, так как месяцы в DateTime начинаются с 1
@@ -72,6 +76,26 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
 
     return months[month];
   }
+
+  // String getImageAssetPath(String condition) {
+  //   switch (condition) {
+  //     case 'cloudy':
+  //       return 'assets/images/cloudy.svg';
+  //     case 'windy':
+  //       return 'assets/images/windy.svg';
+  //     case 'sunny':
+  //       return 'assets/images/sunny.svg';
+  //     case 'storm':
+  //       return 'assets/images/storm.svg';
+  //     case 'snow':
+  //       return 'assets/images/snow.svg';
+  //     case 'rain':
+  //       return 'assets/images/rain.svg';
+  //     default:
+  //       return 'assets/images/default.svg'; // fallback image path
+  //   }
+  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -116,16 +140,17 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
             ),
           ),
           SvgPicture.asset(
-            "assets/images/cloudy.svg",
+            'assets/images/sunny.svg',
             fit: BoxFit.contain,
             width: double.infinity,
             height: 300,
           ),
           const SizedBox(height: 20),
           const Text(
-            'Windy',
+            'Sunny',
             style: TextStyle(fontSize: 35, color: Colors.black26),
           ),
+
           const SizedBox(height: 20),
           FutureBuilder<Weather?>(
             future: getData(),
@@ -171,7 +196,7 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
               }
             },
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Search(onCitySelected: onCitySelected),
           const SizedBox(height: 40),
           Expanded(
@@ -185,19 +210,33 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                   topRight: Radius.circular(35),
                 ),
               ),
-              child: const Column(
+              child:  Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         'Today',
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
-                      Text(
-                        'Next 7 Days',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      GestureDetector(
+                        onTap: () => Navigator.push(context, MaterialPageRoute(
+                            builder: (_) => const ForecastPage(),)),
+                        child: Row(
+                          children: [
+                            const Text(
+                              'Next 7 Days',
+                              style: TextStyle(color: Colors.white, fontSize: 18),
+                            ),
+                            Icon(
+                                Icons.arrow_forward_ios,
+                              color: Colors.white,
+                              size: 18,
+                            )
+                          ],
+                        ),
                       ),
+
                     ],
                   ),
                 ],
@@ -205,7 +244,7 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
             ),
           ),
           Container(
-              color: const Color(0xff5a1bee), child: const HourlyWeather()),
+              color: const Color(0xff5a1bee), child: const HourlyWeather(city: 'Bishkek',)),
         ],
       ),
       bottomNavigationBar: Container(
@@ -242,6 +281,13 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                   icon: Icon(Icons.settings_outlined),
                 ),
               ],
+              onTap: (index) {
+                if (index == 1) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage(),
+                  ),
+                  );
+                }
+              },
             ),
           ),
         ),
