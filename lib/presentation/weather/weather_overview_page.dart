@@ -244,7 +244,7 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
             ),
           ),
           Container(
-              color: const Color(0xff5a1bee), child: const HourlyWeather(city: 'Bishkek',)),
+              color: const Color(0xff5a1bee), child: HourlyWeather(selectedCity: selectedCity,)),
         ],
       ),
       bottomNavigationBar: Container(

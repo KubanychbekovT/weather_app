@@ -5,9 +5,9 @@ import 'dart:async';
 import 'dart:convert';
 
 class HourlyWeather extends StatefulWidget {
-  final String city;
+  final String selectedCity;
 
-  const HourlyWeather({Key? key, required this.city}) : super(key: key);
+  const HourlyWeather({Key? key, required this.selectedCity}) : super(key: key);
 
   @override
   _HourlyWeatherState createState() => _HourlyWeatherState();
@@ -39,7 +39,7 @@ class _HourlyWeatherState extends State<HourlyWeather> {
 
   Future<void> _fetchWeatherData() async {
     final response = await http.get(Uri.parse(
-        'https://api.openweathermap.org/data/2.5/forecast?q=${widget.city}&appid=4fc48c421a302cd92905b289e1dcd3b6'));
+        'https://api.openweathermap.org/data/2.5/forecast?q=${widget.selectedCity}&appid=4fc48c421a302cd92905b289e1dcd3b6'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List<dynamic> list = data['list'];
@@ -49,7 +49,8 @@ class _HourlyWeatherState extends State<HourlyWeather> {
           DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000);
           final double temperatureKelvin = item['main']['temp'];
           final double temperatureCelsius = temperatureKelvin - 273.15;
-          final String temperature = '${temperatureCelsius.toStringAsFixed(1)}°C';
+          final String temperature =
+              '${temperatureCelsius.toStringAsFixed(1)}°C';
           final String image = _getWeatherImage(item['weather'][0]['icon']);
           return {
             'image': image,
@@ -64,7 +65,6 @@ class _HourlyWeatherState extends State<HourlyWeather> {
       });
     }
   }
-
 
   String _getWeatherImage(String iconCode) {
     return 'http://openweathermap.org/img/w/$iconCode.png';
