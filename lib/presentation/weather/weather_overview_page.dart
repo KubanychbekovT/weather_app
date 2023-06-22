@@ -77,24 +77,24 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
     return months[month];
   }
 
-  // String getImageAssetPath(String condition) {
-  //   switch (condition) {
-  //     case 'cloudy':
-  //       return 'assets/images/cloudy.svg';
-  //     case 'windy':
-  //       return 'assets/images/windy.svg';
-  //     case 'sunny':
-  //       return 'assets/images/sunny.svg';
-  //     case 'storm':
-  //       return 'assets/images/storm.svg';
-  //     case 'snow':
-  //       return 'assets/images/snow.svg';
-  //     case 'rain':
-  //       return 'assets/images/rain.svg';
-  //     default:
-  //       return 'assets/images/default.svg'; // fallback image path
-  //   }
-  // }
+  String getImageAssetPath(String condition) {
+    switch (condition) {
+      case 'cloudy':
+        return 'assets/images/cloudy.svg';
+      case 'windy':
+        return 'assets/images/windy.svg';
+      case 'sunny':
+        return 'assets/images/sunny.svg';
+      case 'storm':
+        return 'assets/images/sorm.svg';
+      case 'snow':
+        return 'assets/images/snowy.svg';
+      case 'rain':
+        return 'assets/images/rainy.svg';
+      default:
+        return 'assets/images/sunny.svg'; // fallback image path
+    }
+  }
 
 
   @override
@@ -140,11 +140,12 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
             ),
           ),
           SvgPicture.asset(
-            'assets/images/sunny.svg',
+            getImageAssetPath(data?.condition ?? ''),
             fit: BoxFit.contain,
             width: double.infinity,
             height: 300,
           ),
+
           const SizedBox(height: 20),
           const Text(
             'Sunny',
@@ -157,8 +158,6 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasData) {
-                  double? kelvin = snapshot.data!.temp;
-                  double celsius = kelvin! - 273.15;
                   return SizedBox(
                     height: 50,
                     width: double.infinity,
@@ -170,7 +169,7 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                           width: 0.5,
                           color: Colors.grey,
                         ),
-                        weatherStatWidget("Temp", "$celsius°C"),
+                        weatherStatWidget("Temp", "${snapshot.data!.temp}°C"),
                         Container(
                           width: 0.5,
                           color: Colors.grey,

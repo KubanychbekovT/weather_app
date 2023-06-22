@@ -6,7 +6,7 @@ class WeatherApiClient {
   Future<Weather?>? getCurrentWeather(String? location) async {
     try{
     var endpoint = Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?q=$location&appid=4fc48c421a302cd92905b289e1dcd3b6'
+        'https://api.openweathermap.org/data/2.5/weather?q=$location&appid=4fc48c421a302cd92905b289e1dcd3b6&units=metric'
     );
 
     var response = await http.get(endpoint);

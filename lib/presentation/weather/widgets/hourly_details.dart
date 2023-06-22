@@ -31,6 +31,14 @@ class _HourlyWeatherState extends State<HourlyWeather> {
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(covariant HourlyWeather oldWidget) {
+    if (widget.selectedCity != oldWidget.selectedCity) {
+      _fetchWeatherData();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
   void _startTimer() {
     _timer = Timer.periodic(const Duration(hours: 1), (_) {
       _fetchWeatherData();
@@ -39,7 +47,7 @@ class _HourlyWeatherState extends State<HourlyWeather> {
 
   Future<void> _fetchWeatherData() async {
     final response = await http.get(Uri.parse(
-        'https://api.openweathermap.org/data/2.5/forecast?q=${widget.selectedCity}&appid=4fc48c421a302cd92905b289e1dcd3b6'));
+        'https://api.openweathermap.org/data/2.5/forecast?q=${widget.selectedCity}&appid=4fc48c421a302cd92905b289e1dcd3b6&units=metric'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List<dynamic> list = data['list'];
@@ -48,9 +56,10 @@ class _HourlyWeatherState extends State<HourlyWeather> {
           final DateTime time =
           DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000);
           final double temperatureKelvin = item['main']['temp'];
-          final double temperatureCelsius = temperatureKelvin - 273.15;
-          final String temperature =
-              '${temperatureCelsius.toStringAsFixed(1)}°C';
+          final double temperatureCelsius = temperatureKelvin;
+
+          final String temperature = '${temperatureCelsius.round()}°C';
+
           final String image = _getWeatherImage(item['weather'][0]['icon']);
           return {
             'image': image,
@@ -73,41 +82,42 @@ class _HourlyWeatherState extends State<HourlyWeather> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: List.generate(containerData.length, (index) {
-        final data = containerData[index];
-        final time = data['time'];
-        final temperature = data['temperature'];
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: List.generate(containerData.length, (index) {
+      final data = containerData[index];
+      final time = data['time'];
+      final temperature = data['temperature'];
 
-        return Container(
+      return Container(
           decoration: BoxDecoration(
-            color: const Color(0xff642ff3),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          height: 120,
-          width: 70,
-          child: Column(
-            children: [
-              const SizedBox(height: 5),
-              Container(
-                height: 45,
-                width: 60,
-                child: Image.network(data['image']),
-              ),
-              const SizedBox(height: 30),
-              Text(
-                time,
-                style: const TextStyle(color: Colors.white, fontSize: 12),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                temperature,
-                style: const TextStyle(color: Colors.white, fontSize: 16),
-              ),
-            ],
-          ),
-        );
-      }),
+          color: const Color(0xff642ff3),
+    borderRadius: BorderRadius.circular(10),
+    ),
+    height: 120,
+    width: 70,
+    child: Column(
+    children: [
+    const SizedBox(height: 5),
+    Container(
+    height: 45,
+    width: 60,
+    child: Image.network(data['image']),
+    ),
+    const SizedBox(height: 30),
+    Text
+      (
+      time,
+      style: const TextStyle(color: Colors.white, fontSize: 12),
+    ),
+      const SizedBox(height: 5),
+      Text(
+        temperature,
+        style: const TextStyle(color: Colors.white, fontSize: 16),
+      ),
+    ],
+    ),
+      );
+        }),
     );
   }
 }

@@ -23,7 +23,7 @@ class _ForecastPageState extends State<ForecastPage> {
   Future<void> fetchWeatherData() async {
     const apiKey = '4fc48c421a302cd92905b289e1dcd3b6&cnt';
     final apiUrl =
-        'https://api.openweathermap.org/data/2.5/forecast?q=${widget.selectedCity}&appid=4fc48c421a302cd92905b289e1dcd3b6&cnt=7';
+        'https://api.openweathermap.org/data/2.5/forecast?q=${widget.selectedCity}&appid=4fc48c421a302cd92905b289e1dcd3b6&cnt=7&units=metric';
 
 
 
@@ -91,7 +91,7 @@ class WeatherData {
 
   factory WeatherData.fromMap(Map<String, dynamic> map) {
     final DateTime date = DateTime.fromMillisecondsSinceEpoch(map['dt'] * 1000);
-    final double temperature = map['main']['temp'].toDouble() - 273.15;
+    final double temperature = map['main']['temp'].toDouble();
     return WeatherData(date: date, temperature: temperature);
   }
 }

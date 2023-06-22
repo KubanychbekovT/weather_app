@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weather/application/services/weather_api_client.dart';
 import 'package:weather/application/services/city_api_client.dart';
 import 'package:weather/domain/models/weather_model.dart';
 
@@ -18,10 +17,8 @@ class _SearchState extends State<Search> {
       OpenCageApiClient('0d2721ad4c334bb5a6a9015de89caa63');
   Weather? weather;
   OverlayEntry? _overlayEntry;
-
   List<String> citySuggestions = [];
-
-
+  bool _isSuggestionsVisible = false;
 
   void searchCity(String city) async {
     if (city.isNotEmpty) {
@@ -60,7 +57,6 @@ class _SearchState extends State<Search> {
           width: size?.width,
           child: Material(
             color: Color(0xffecf3fe),
-            //elevation: 4,
             child: ListView.builder(
               shrinkWrap: true,
               itemCount: citySuggestions.length,
@@ -73,7 +69,6 @@ class _SearchState extends State<Search> {
                     _hideSuggestionsOverlay();
                   },
                 );
-
               },
             ),
           ),
@@ -82,11 +77,13 @@ class _SearchState extends State<Search> {
     );
 
     Overlay.of(context)?.insert(_overlayEntry!);
+    _isSuggestionsVisible = true;
   }
 
   void _hideSuggestionsOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
+    _isSuggestionsVisible = false;
   }
 
   @override
@@ -108,17 +105,15 @@ class _SearchState extends State<Search> {
               style: const TextStyle(color: Colors.black),
               textInputAction: TextInputAction.search,
               onChanged: (value) {
-                getCitySuggestions(
-                    value); // Вызываем метод при каждом изменении текста
+                getCitySuggestions(value);
                 if (value.isNotEmpty) {
-                  _showSuggestionsOverlay(); // Показываем рекомендации, если поле не пустое
+                  _showSuggestionsOverlay();
                 } else {
-                  _hideSuggestionsOverlay(); // Скрываем рекомендации, если поле пустое
+                  _hideSuggestionsOverlay();
                 }
               },
               decoration: InputDecoration(
                 filled: true,
-
                 suffixIcon: IconButton(
                   icon: const Icon(
                     Icons.search,
@@ -126,6 +121,7 @@ class _SearchState extends State<Search> {
                   ),
                   onPressed: () {
                     searchCity(_searchController.text);
+                    _hideSuggestionsOverlay();
                   },
                 ),
                 hintStyle: const TextStyle(
@@ -158,6 +154,7 @@ class _SearchState extends State<Search> {
               cursorColor: Color(0xff3d4a73),
               onSubmitted: (value) {
                 searchCity(value);
+                _hideSuggestionsOverlay();
               },
             ),
           ),
