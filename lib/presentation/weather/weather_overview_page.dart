@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:weather/application/services/weather_api_client.dart';
 import 'package:weather/domain/models/weather_model.dart';
 import 'package:weather/presentation/forecast/forecast_page.dart';
 import 'package:weather/presentation/search/search.dart';
 import 'package:weather/presentation/settings/settings.dart';
+import 'package:weather/presentation/weather/widgets/condition.dart';
 import 'package:weather/presentation/weather/widgets/hourly_details.dart';
 import '../../domain/core/failures.dart';
 import 'widgets/weather_stat.dart';
@@ -16,8 +18,9 @@ class WeatherOverviewPage extends StatefulWidget {
   _WeatherOverviewPageState createState() => _WeatherOverviewPageState();
 }
 
-class _WeatherOverviewPageState extends State<WeatherOverviewPage>
-    with SingleTickerProviderStateMixin {
+class _WeatherOverviewPageState extends State<WeatherOverviewPage> with SingleTickerProviderStateMixin {
+  String weatherImage = 'assets/images/sunny.svg';
+  String weatherText = '';
 
   late TabController _tabController;
   WeatherApiClient client = WeatherApiClient();
@@ -45,14 +48,17 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
     Weather? weather = await client.getCurrentWeather(city);
     setState(() {
       data = weather;
+      weatherImage = WeatherStatus().getWeatherIcon(weather?.condition ?? '');
+      weatherText = weather?.condition ?? '';
     });
   }
 
+
   void onCitySelected(String city) {
     setState(() {
-      selectedCity = city; // Обновление выбранного города
+      selectedCity = city; // Update the selected city
     });
-    fetchData(selectedCity); // Обновление погодных данных
+    fetchData(selectedCity); // Fetch weather data for the selected city
   }
 
 
@@ -77,24 +83,7 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
     return months[month];
   }
 
-  String getImageAssetPath(String condition) {
-    switch (condition) {
-      case 'cloudy':
-        return 'assets/images/cloudy.svg';
-      case 'windy':
-        return 'assets/images/windy.svg';
-      case 'sunny':
-        return 'assets/images/sunny.svg';
-      case 'storm':
-        return 'assets/images/sorm.svg';
-      case 'snow':
-        return 'assets/images/snowy.svg';
-      case 'rain':
-        return 'assets/images/rainy.svg';
-      default:
-        return 'assets/images/sunny.svg'; // fallback image path
-    }
-  }
+
 
 
   @override
@@ -140,16 +129,15 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
             ),
           ),
           SvgPicture.asset(
-            getImageAssetPath(data?.condition ?? ''),
+            weatherImage,
             fit: BoxFit.contain,
             width: double.infinity,
             height: 300,
           ),
-
           const SizedBox(height: 20),
-          const Text(
-            'Sunny',
-            style: TextStyle(fontSize: 35, color: Colors.black26),
+          Text(
+            weatherText,
+            style: const TextStyle(fontSize: 35, color: Colors.black26),
           ),
 
           const SizedBox(height: 20),
@@ -186,9 +174,11 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                   } else {
                     return Text('Error: ${snapshot.error}');
                   }
-                }
-                else {
-                  return const Text('{"cod":"404","message":"city not found"}');
+                } else {
+                  return const Text(
+                    'cod: 404, message: city not found',
+                    style: TextStyle(color: Colors.red),
+                  );
                 }
               } else {
                 return const CircularProgressIndicator();
@@ -209,7 +199,7 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                   topRight: Radius.circular(35),
                 ),
               ),
-              child:  Column(
+              child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -219,23 +209,27 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       GestureDetector(
-                        onTap: () => Navigator.push(context, MaterialPageRoute(
-                            builder: (_) =>  ForecastPage(selectedCity: selectedCity),)),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  ForecastPage(selectedCity: selectedCity),
+                            )),
                         child: Row(
                           children: [
                             const Text(
                               'Next 7 Days',
-                              style: TextStyle(color: Colors.white, fontSize: 18),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
                             ),
                             Icon(
-                                Icons.arrow_forward_ios,
+                              Icons.arrow_forward_ios,
                               color: Colors.white,
                               size: 18,
                             )
                           ],
                         ),
                       ),
-
                     ],
                   ),
                 ],
@@ -243,7 +237,10 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
             ),
           ),
           Container(
-              color: const Color(0xff5a1bee), child: HourlyWeather(selectedCity: selectedCity,)),
+              color: const Color(0xff5a1bee),
+              child: HourlyWeather(
+                selectedCity: selectedCity,
+              )),
         ],
       ),
       bottomNavigationBar: Container(
@@ -282,8 +279,11 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
               ],
               onTap: (index) {
                 if (index == 1) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage(),
-                  ),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SettingsPage(),
+                    ),
                   );
                 }
               },

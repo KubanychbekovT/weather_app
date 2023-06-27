@@ -16,14 +16,13 @@ class _SearchState extends State<Search> {
   OpenCageApiClient client =
       OpenCageApiClient('0d2721ad4c334bb5a6a9015de89caa63');
   Weather? weather;
-  OverlayEntry? _overlayEntry;
   List<String> citySuggestions = [];
   bool _isSuggestionsVisible = false;
 
   void searchCity(String city) async {
     if (city.isNotEmpty) {
       widget.onCitySelected(city);
-      _hideSuggestionsOverlay();
+      _hideSuggestions();
     }
   }
 
@@ -40,56 +39,25 @@ class _SearchState extends State<Search> {
         });
       }
     } catch (e) {
-      print('Error fetching city suggestions: $e');
+      //print('Error fetching city suggestions: $e');
     }
   }
 
-  void _showSuggestionsOverlay() {
-    final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-    final size = renderBox?.size;
-    final offset = renderBox?.localToGlobal(Offset.zero);
-
-    _overlayEntry = OverlayEntry(
-      builder: (context) {
-        return Positioned(
-          top: (offset?.dy ?? 0) + (size?.height ?? 0),
-          left: offset?.dx,
-          width: size?.width,
-          child: Material(
-            color: Color(0xffecf3fe),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: citySuggestions.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(citySuggestions[index]),
-                  onTap: () {
-                    _searchController.text = citySuggestions[index];
-                    searchCity(citySuggestions[index]);
-                    _hideSuggestionsOverlay();
-                  },
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-
-    Overlay.of(context)?.insert(_overlayEntry!);
-    _isSuggestionsVisible = true;
+  void _showSuggestions() {
+    setState(() {
+      _isSuggestionsVisible = true;
+    });
   }
 
-  void _hideSuggestionsOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    _isSuggestionsVisible = false;
+  void _hideSuggestions() {
+    setState(() {
+      _isSuggestionsVisible = false;
+    });
   }
 
   @override
   void dispose() {
     _searchController.dispose();
-    _hideSuggestionsOverlay();
     super.dispose();
   }
 
@@ -97,19 +65,19 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            TextField(
               controller: _searchController,
               style: const TextStyle(color: Colors.black),
               textInputAction: TextInputAction.search,
               onChanged: (value) {
                 getCitySuggestions(value);
                 if (value.isNotEmpty) {
-                  _showSuggestionsOverlay();
+                  _showSuggestions();
                 } else {
-                  _hideSuggestionsOverlay();
+                  _hideSuggestions();
                 }
               },
               decoration: InputDecoration(
@@ -121,7 +89,7 @@ class _SearchState extends State<Search> {
                   ),
                   onPressed: () {
                     searchCity(_searchController.text);
-                    _hideSuggestionsOverlay();
+                    _hideSuggestions();
                   },
                 ),
                 hintStyle: const TextStyle(
@@ -154,11 +122,29 @@ class _SearchState extends State<Search> {
               cursorColor: Color(0xff3d4a73),
               onSubmitted: (value) {
                 searchCity(value);
-                _hideSuggestionsOverlay();
+                _hideSuggestions();
               },
             ),
-          ),
-        ],
+            if (_isSuggestionsVisible && citySuggestions.isNotEmpty)
+              Container(
+                height: 100,
+                color: Color(0xffecf3fe),
+                child: ListView.builder(
+                  itemCount: citySuggestions.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(citySuggestions[index]),
+                      onTap: () {
+                        _searchController.text = citySuggestions[index];
+                        searchCity(citySuggestions[index]);
+                        _hideSuggestions();
+                      },
+                    );
+                  },
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

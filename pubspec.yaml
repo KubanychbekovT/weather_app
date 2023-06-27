@@ -42,6 +42,7 @@ dependencies:
   flutter_svg: any
   intl: ^0.18.1
   http: ^1.0.0
+  get: ^4.6.5
 
 
 dev_dependencies:
