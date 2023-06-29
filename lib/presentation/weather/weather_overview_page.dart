@@ -176,7 +176,7 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage> with SingleTi
                   }
                 } else {
                   return const Text(
-                    'cod: 404, message: city not found',
+                    'city not found',
                     style: TextStyle(color: Colors.red),
                   );
                 }
