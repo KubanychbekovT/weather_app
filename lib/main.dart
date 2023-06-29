@@ -1,25 +1,29 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/presentation/core/widgets/app_widget.dart';
+import 'package:weather/theme.dart';
 
-
-
-
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Weather',
-      debugShowCheckedModeBanner: false,
-      home:AppWidget()
+    return AdaptiveTheme(
+      light: AppTheme.lightTheme(),
+      dark: AppTheme.darkTheme(),
+      initial: AdaptiveThemeMode.light,
+      builder: (theme, darkTheme) => MaterialApp(
+        title: 'Weather',
+        debugShowCheckedModeBanner: false,
+        theme: theme,
+        darkTheme: darkTheme,
+        initialRoute: '/',
+        home: AppWidget(),
+      ),
     );
   }
 }
-
-

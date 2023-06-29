@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.18.1
   http: ^1.0.0
   get: ^4.6.5
+  adaptive_theme: ^3.3.0
 
 
 dev_dependencies:

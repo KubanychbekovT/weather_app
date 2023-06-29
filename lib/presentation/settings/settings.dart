@@ -1,12 +1,15 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Color(0xffecf3fe),
+    return Scaffold(
+      backgroundColor: Colors.yellow,
     );
+
   }
 }

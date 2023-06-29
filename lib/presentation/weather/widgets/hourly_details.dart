@@ -90,7 +90,7 @@ class _HourlyWeatherState extends State<HourlyWeather> {
 
         return Container(
           decoration: BoxDecoration(
-            color: const Color(0xff642ff3),
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(10),
           ),
           height: 120,
