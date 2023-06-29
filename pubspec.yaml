@@ -45,6 +45,7 @@ dependencies:
   get: ^4.6.5
   adaptive_theme: ^3.3.0
   percent_indicator: ^4.2.3
+  dashed_circle: ^0.0.2
 
 
 dev_dependencies:

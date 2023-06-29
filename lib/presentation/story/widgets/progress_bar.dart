@@ -9,7 +9,7 @@ class MyProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LinearPercentIndicator(
-      lineHeight: 15,
+      lineHeight: 10,
       percent: percentWatched,
       progressColor: Colors.grey[400],
       backgroundColor: Colors.grey[600],

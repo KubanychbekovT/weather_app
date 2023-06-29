@@ -20,7 +20,7 @@ class _MyStory3State extends State<MyStory3> {
   }
 
   Future<void> fetchRandomPhoto() async {
-    final response = await http.get(Uri.parse('https://api.unsplash.com/photos/random/?client_id=Cuy4OEkNsvPao_Xe2o8TLSXYdUpzTzRPEzIyrNs0qaI'));
+    final response = await http.get(Uri.parse('https://api.unsplash.com/photos/random/?query=weather&client_id=Cuy4OEkNsvPao_Xe2o8TLSXYdUpzTzRPEzIyrNs0qaI'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       setState(() {

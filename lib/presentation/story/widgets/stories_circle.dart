@@ -1,22 +1,60 @@
 import 'package:flutter/material.dart';
 
 class StoryCircle extends StatelessWidget {
-  final function;
+  final VoidCallback function;
 
-  const StoryCircle({super.key, this.function});
+  const StoryCircle({Key? key, required this.function}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: function,
-      child: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0xff5a1bee),
+      child: Container(
+        height: 70,
+        width: 70,
+        margin: EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF3383CD),
+              Color(0xFF11249F),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Container(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white,
+                width: 2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 3,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            // child: ClipOval(
+            //   child: Image.network(
+            //     'https://nature_image.com/200/200', // Replace with your image URL
+            //     fit: BoxFit.cover,
+            //   ),
+            // ),
           ),
         ),
       ),
