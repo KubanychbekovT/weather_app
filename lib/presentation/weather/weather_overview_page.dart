@@ -9,6 +9,7 @@ import 'package:weather/presentation/search/search.dart';
 import 'package:weather/presentation/settings/settings.dart';
 import 'package:weather/presentation/weather/widgets/condition.dart';
 import 'package:weather/presentation/weather/widgets/hourly_details.dart';
+import 'package:weather/presentation/story/widgets/stories.dart';
 import '../../domain/core/failures.dart';
 import '../../theme.dart';
 import 'widgets/weather_stat.dart';
@@ -141,14 +142,15 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                     weatherImage,
                     fit: BoxFit.contain,
                     width: double.infinity,
-                    height: 300,
+                    height: 280,
                   ),
-                  SizedBox(height: 20),
-                  Text(
-                    weatherText,
-                    style: TextStyle(fontSize: 35, color: Colors.black26),
-                  ),
-                  SizedBox(height: 20),
+                  // SizedBox(height: 20),
+                  // Text(
+                  //   weatherText,
+                  //   style: TextStyle(fontSize: 35, color: Colors.black26),
+                  // ),
+                  // SizedBox(height: 20),
+                  StoriesWidget(),
                   FutureBuilder<Weather?>(
                     future: getData(),
                     builder: (context, snapshot) {

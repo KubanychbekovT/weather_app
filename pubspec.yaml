@@ -44,6 +44,7 @@ dependencies:
   http: ^1.0.0
   get: ^4.6.5
   adaptive_theme: ^3.3.0
+  percent_indicator: ^4.2.3
 
 
 dev_dependencies:
