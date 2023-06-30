@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather/presentation/story/widgets/stories.dart';
+import 'dart:math';
 
 class ImagesPage extends StatefulWidget {
   const ImagesPage({Key? key});
@@ -9,121 +10,210 @@ class ImagesPage extends StatefulWidget {
 }
 
 class _ImagesPageState extends State<ImagesPage> {
-  List<ImageData> images = [
-    ImageData(
-      title: 'Sunny',
-      imageUrl: 'assets/posts/sun.jpg',
-      description: 'Sunny or clear means there are no clouds in the sky, and cloudy means the entire sky is covered by clouds. One of the most misused weather terms is "fair." The NWS uses "fair," typically at night, to describe less than 3/8 cloud cover, with no precipitation and no extremes of visibility, temperature or winds.',
-      ),
-    ImageData(
-      title: 'Rainy',
-      imageUrl: 'assets/posts/rain.jpg',
-      description: 'Rain is liquid precipitation: water falling from the sky. Raindrops fall to Earth when clouds become saturated, or filled, with water droplets. Millions of water droplets bump into each other as they gather in a cloud. When a small water droplet bumps into a bigger one, it condenses, or combines, with the larger one.',
-    ),
-    ImageData(
-      title: 'Snowy',
-      imageUrl: 'assets/posts/snow.jpg',
-      description: 'Snow is precipitation that forms when water vapor freezes. Snow falls as ice crystals from clouds when temperatures drop below freezing and there is enough humidity in the air.',
-    ),
-    ImageData(
-      title: 'Windy',
-      imageUrl: 'assets/posts/wind.jpg',
-      description: 'Wind is the movement of air from an area of high pressure to an area of low pressure. In fact, wind exists because the sun unevenly heats the surface of the Earth. As hot air rises, cooler air moves in to fill the void. As long as the sun shines, the wind will blow.',
-    ),
-    ImageData(
-      title: 'Stormy',
-      imageUrl: 'assets/posts/storm.jpg',
-      description: 'Storms are raging atmospheric disturbance that is characterized by cloud cover, low barometric pressure, precipitation, and also with wild winds. They are also coupled with thunder and lightning. The cause of the storm is the moisture content in the air.',
-    ),
+  final List<String> images = [
+    'assets/posts/snow.jpg',
+    'assets/posts/rain.jpg',
+    'assets/posts/sun.jpg',
   ];
+
+  final List<String> profileImages = [
+    'assets/posts/plant.jpg',
+    'assets/posts/storm.jpg',
+    'assets/posts/wind.jpg',
+  ];
+
+  final List<String> profileNames = [
+    'weatherlover',
+    'nature.republic.kyrgyzstan',
+    'weather_enthusiast',
+  ];
+
+  final List<String> quotes = [
+    'Enjoying the snowy weather!',
+    'Rain reminds all things to grow.',
+    'Embracing the sunny days!',
+  ];
+
+  Random random = Random();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: Column(
-        children: [
-          SizedBox(height: 24),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Stories',
-                      style: TextStyle(
-                        color: Color(0xff3d4a73),
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Weather',
+                        style: TextStyle(
+                          color: Color(0xff3d4a73),
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            StoriesWidget(),
+            // const Divider(color: Colors.white.withOpacity(0.3)),
+            for (int i = 0; i < images.length; i++) ...[
+              buildPublication(images[i], i),
+              const SizedBox(height: 12),
+              buildLikesAndComments(),
+              const SizedBox(height: 12),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildPublication(String imagePath, int index) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image:
+                        AssetImage(profileImages[index % profileImages.length]),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 15),
+              Text(
+                profileNames[index % profileNames.length],
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          height: 400,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(imagePath),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.only(left: 15, right: 15, top: 3),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.favorite_border,
+                    size: 32,
+                  ),
+                  const SizedBox(width: 20),
+                  Icon(
+                    Icons.mode_comment_outlined,
+                    size: 32,
+                  ),
+                  const SizedBox(width: 20),
+                  Icon(
+                    Icons.near_me_outlined,
+                    size: 32,
+                  ),
+                ],
+              ),
+              Icon(
+                Icons.bookmark_border,
+                size: 32,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.only(left: 15, right: 15),
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Likes: ${random.nextInt(5000)} ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                  ),
                 ),
               ],
             ),
           ),
-          StoriesWidget(),
-          Expanded(
-            child: ListView.builder(
-              itemCount: images.length,
-              itemBuilder: (context, index) {
-                final imageData = images[index];
-                return Column(
-                  children: [
-                    SizedBox(height: 16),
-                Text(
-                  imageData.title,
+        ),
+        const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.only(left: 15, right: 15),
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: profileNames[index % profileNames.length] + ' ',
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Color(0xff3d4a73),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
                   ),
                 ),
-                    SizedBox(height: 10),
-                    Container(
-                      width: 300,
-                      height: 300,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(imageData.imageUrl),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      imageData.description,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff3d4a73),
-                        fontStyle: FontStyle.italic,
-
-                      ),
-                    ),
-                  ],
-                );
-              },
+                TextSpan(
+                  text: quotes[index % quotes.length],
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                  ),
+                ),
+              ],
             ),
           ),
+        ),
+      ],
+    );
+  }
 
+  Widget buildLikesAndComments() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 15, right: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'View all comments (${random.nextInt(500)})',
+            style: TextStyle(
+              color: Colors.black54,
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );
   }
-}
-
-class ImageData {
-  final String title;
-  final String imageUrl;
-  final String description;
-
-  ImageData({
-    required this.title,
-    required this.imageUrl,
-    required this.description,
-  });
 }

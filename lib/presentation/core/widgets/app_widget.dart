@@ -32,7 +32,7 @@ class _AppWidgetState extends State<AppWidget> {
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Color(0xff6200ee),
+        backgroundColor: Color(0xFF11249F),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white.withOpacity(.60),
         selectedFontSize: 14,
