@@ -23,7 +23,7 @@ class _StoryCircleState extends State<StoryCircle> {
 
   Future<void> fetchRandomImage() async {
     final response =
-    await http.get(Uri.parse('https://api.unsplash.com/photos/random/?client_id=YOUR_CLIENT_ID'));
+    await http.get(Uri.parse('https://api.unsplash.com/photos/random/?query=weather&client_id=Cuy4OEkNsvPao_Xe2o8TLSXYdUpzTzRPEzIyrNs0qaI'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final urls = data['urls'];
