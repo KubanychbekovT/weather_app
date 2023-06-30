@@ -1,7 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/presentation/core/widgets/app_widget.dart';
-import 'package:weather/theme.dart';
+import 'package:weather/presentation/core/theme.dart';
 
 void main() async {
   runApp(const MyApp());

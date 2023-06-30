@@ -5,13 +5,10 @@ import 'package:get/get.dart';
 import 'package:weather/application/services/weather_api_client.dart';
 import 'package:weather/domain/models/weather_model.dart';
 import 'package:weather/presentation/forecast/forecast_page.dart';
-import 'package:weather/presentation/search/search.dart';
-import 'package:weather/presentation/settings/settings.dart';
+import 'package:weather/presentation/core/widgets/search.dart';
 import 'package:weather/presentation/weather/widgets/condition.dart';
 import 'package:weather/presentation/weather/widgets/hourly_details.dart';
-import 'package:weather/presentation/story/widgets/stories.dart';
 import '../../domain/core/failures.dart';
-import '../../theme.dart';
 import 'widgets/weather_stat.dart';
 
 class WeatherOverviewPage extends StatefulWidget {
@@ -39,15 +36,9 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
     fetchData(selectedCity);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController.dispose();
-  }
 
   void fetchData(String city) async {
     Weather? weather = await client.getCurrentWeather(city);
@@ -87,7 +78,6 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
           backgroundColor: Theme.of(context).backgroundColor,
           body: Column(
@@ -142,15 +132,14 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                     weatherImage,
                     fit: BoxFit.contain,
                     width: double.infinity,
-                    height: 280,
+                    height: 300,
                   ),
-                  // SizedBox(height: 20),
+                   SizedBox(height: 20),
                   // Text(
                   //   weatherText,
                   //   style: TextStyle(fontSize: 35, color: Colors.black26),
                   // ),
                   // SizedBox(height: 20),
-                  StoriesWidget(),
                   FutureBuilder<Weather?>(
                     future: getData(),
                     builder: (context, snapshot) {
@@ -198,9 +187,9 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                       }
                     },
                   ),
-                  SizedBox(height: 20),
-                  Search(onCitySelected: onCitySelected),
                   SizedBox(height: 40),
+                  Search(onCitySelected: onCitySelected),
+                  SizedBox(height: 100),
                   Expanded(
                     child: Container(
                       width: MediaQuery.of(context).size.width,
@@ -251,60 +240,13 @@ class _WeatherOverviewPageState extends State<WeatherOverviewPage>
                     ),
                   ),
                   Container(
+                    padding: EdgeInsets.symmetric(vertical: 32),
                     color:  Theme.of(context).primaryColor,
                     child: HourlyWeather(
                       selectedCity: selectedCity,
                     ),
                   ),
                 ],
-              ),
-              bottomNavigationBar: Container(
-                color:  Theme.of(context).primaryColor,
-                height: 140,
-                padding: const EdgeInsets.all(24),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(30.0),
-                  ),
-                  child: Container(
-                    color: Colors.white,
-                    child: TabBar(
-                      controller: _tabController,
-                      labelColor: Colors.black54,
-                      unselectedLabelColor: Colors.black54,
-                      labelStyle: TextStyle(fontSize: 10),
-                      indicator: const UnderlineTabIndicator(
-                        insets: EdgeInsets.fromLTRB(
-                          50,
-                          0,
-                          50,
-                          48,
-                        ),
-                      ),
-                      indicatorColor: Colors.black54,
-                      tabs: const <Widget>[
-                        Tab(
-                          text: 'Home',
-                          icon: Icon(Icons.home_outlined),
-                        ),
-                        Tab(
-                          text: 'Settings',
-                          icon: Icon(Icons.settings_outlined),
-                        ),
-                      ],
-                      onTap: (index) {
-                        if (index == 1) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SettingsPage(),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                ),
               ),
             );
   }
