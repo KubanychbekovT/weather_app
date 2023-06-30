@@ -1,14 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class StoryCircle extends StatelessWidget {
+class StoryCircle extends StatefulWidget {
   final VoidCallback function;
 
   const StoryCircle({Key? key, required this.function}) : super(key: key);
 
   @override
+  _StoryCircleState createState() => _StoryCircleState();
+}
+
+class _StoryCircleState extends State<StoryCircle> {
+  late String imageUrl;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRandomImage();
+  }
+
+  Future<void> fetchRandomImage() async {
+    final response =
+    await http.get(Uri.parse('https://api.unsplash.com/photos/random/?client_id=YOUR_CLIENT_ID'));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final urls = data['urls'];
+      setState(() {
+        imageUrl = urls['regular'];
+        isLoading = false;
+      });
+    } else {
+      throw Exception('Failed to load image');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: function,
+      onTap: widget.function,
       child: Container(
         height: 70,
         width: 70,
@@ -49,12 +80,16 @@ class StoryCircle extends StatelessWidget {
                 ),
               ],
             ),
-            // child: ClipOval(
-            //   child: Image.network(
-            //     'https://nature_image.com/200/200', // Replace with your image URL
-            //     fit: BoxFit.cover,
-            //   ),
-            // ),
+            child: ClipOval(
+              child: isLoading
+                  ? CircularProgressIndicator()
+                  : imageUrl != null
+                  ? Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+              )
+                  : Container(),
+            ),
           ),
         ),
       ),
