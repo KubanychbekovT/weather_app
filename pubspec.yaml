@@ -40,12 +40,12 @@ dependencies:
   json_annotation: ^4.8.0
   flutter_glow: ^0.2.0
   flutter_svg: any
-  intl: ^0.18.1
   http: ^1.0.0
   get: ^4.6.5
   adaptive_theme: ^3.3.0
   percent_indicator: ^4.2.3
   dashed_circle: ^0.0.2
+  intl: ^0.17.0
 
 
 dev_dependencies:
