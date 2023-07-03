@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weather/presentation/settings/settings.dart';
+import 'package:weather/presentation/more/more_page.dart';
 import 'package:weather/presentation/weather/weather_overview_page.dart';
-
 import '../../image/images_page.dart';
 
 class AppWidget extends StatefulWidget {
@@ -17,7 +16,7 @@ class _AppWidgetState extends State<AppWidget> {
   final List<Widget> _pages = [
     WeatherOverviewPage(),
     ImagesPage(),
-    ProfilePage(),
+    MorePage(),
   ];
 
   void _onItemTapped(int index) {
