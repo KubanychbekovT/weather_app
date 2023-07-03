@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:weather/presentation/story/widgets/stories.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'dart:math';
+import 'package:weather/presentation/story/widgets/stories.dart';
 
 class ImagesPage extends StatefulWidget {
   const ImagesPage({Key? key});
@@ -10,31 +12,45 @@ class ImagesPage extends StatefulWidget {
 }
 
 class _ImagesPageState extends State<ImagesPage> {
-  final List<String> images = [
-    'assets/posts/snow.jpg',
-    'assets/posts/rain.jpg',
-    'assets/posts/sun.jpg',
-  ];
-
-  final List<String> profileImages = [
-    'assets/posts/plant.jpg',
-    'assets/posts/storm.jpg',
-    'assets/posts/wind.jpg',
-  ];
-
-  final List<String> profileNames = [
-    'weatherlover',
-    'nature.republic.kyrgyzstan',
-    'weather_enthusiast',
-  ];
-
-  final List<String> quotes = [
-    'Enjoying the snowy weather!',
-    'Rain reminds all things to grow.',
-    'Embracing the sunny days!',
-  ];
+  final String apiUrl = 'https://jsonplaceholder.typicode.com';
+  final String quoteApiUrl = 'https://api.quotable.io/random';
 
   Random random = Random();
+  List<Map<String, dynamic>> posts = [];
+  String quote = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPosts();
+    fetchQuote();
+  }
+
+  Future<String> fetchQuote() async {
+    final response = await http.get(Uri.parse(quoteApiUrl));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final String quote = data['content'];
+      setState(() {
+        this.quote = quote;
+      });
+      return quote;
+    } else {
+      throw Exception('Failed to fetch quote');
+    }
+  }
+
+  Future<void> fetchPosts() async {
+    final response = await http.get(Uri.parse('$apiUrl/posts'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      setState(() {
+        posts = data.cast<Map<String, dynamic>>();
+      });
+    } else {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +60,8 @@ class _ImagesPageState extends State<ImagesPage> {
         child: Column(
           children: [
             const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -66,12 +82,11 @@ class _ImagesPageState extends State<ImagesPage> {
               ),
             ),
             const SizedBox(height: 12),
-            StoriesWidget(),
-            // const Divider(color: Colors.white.withOpacity(0.3)),
-            for (int i = 0; i < images.length; i++) ...[
-              buildPublication(images[i], i),
+            const StoriesWidget(),
+            for (final post in posts) ...[
+              buildPublication(post),
               const SizedBox(height: 12),
-              buildLikesAndComments(),
+              buildLikesAndComments(post),
               const SizedBox(height: 12),
             ],
           ],
@@ -80,7 +95,7 @@ class _ImagesPageState extends State<ImagesPage> {
     );
   }
 
-  Widget buildPublication(String imagePath, int index) {
+  Widget buildPublication(Map<String, dynamic> post) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -94,19 +109,21 @@ class _ImagesPageState extends State<ImagesPage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                    image:
-                        AssetImage(profileImages[index % profileImages.length]),
+                    image: NetworkImage(
+                        'https://picsum.photos/seed/${post['id']}/40/40'),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               const SizedBox(width: 15),
-              Text(
-                profileNames[index % profileNames.length],
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
+              Flexible(
+                child: Text(
+                  post['title'],
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],
@@ -117,14 +134,15 @@ class _ImagesPageState extends State<ImagesPage> {
           height: 400,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(imagePath),
+              image:
+                  NetworkImage('https://picsum.photos/seed/${post['id']}/400'),
               fit: BoxFit.cover,
             ),
           ),
         ),
         const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15, top: 3),
+        const Padding(
+          padding: EdgeInsets.only(left: 15, right: 15, top: 3),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -134,12 +152,12 @@ class _ImagesPageState extends State<ImagesPage> {
                     Icons.favorite_border,
                     size: 32,
                   ),
-                  const SizedBox(width: 20),
+                  SizedBox(width: 20),
                   Icon(
                     Icons.mode_comment_outlined,
                     size: 32,
                   ),
-                  const SizedBox(width: 20),
+                  SizedBox(width: 20),
                   Icon(
                     Icons.near_me_outlined,
                     size: 32,
@@ -161,7 +179,7 @@ class _ImagesPageState extends State<ImagesPage> {
               children: [
                 TextSpan(
                   text: 'Likes: ${random.nextInt(5000)} ',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 15,
                   ),
@@ -176,16 +194,16 @@ class _ImagesPageState extends State<ImagesPage> {
           child: RichText(
             text: TextSpan(
               children: [
-                TextSpan(
-                  text: profileNames[index % profileNames.length] + ' ',
+                const TextSpan(
+                  text: 'Author: ',
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 15,
                   ),
                 ),
                 TextSpan(
-                  text: quotes[index % quotes.length],
-                  style: TextStyle(
+                  text: quote,
+                  style: const TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 15,
                   ),
@@ -198,7 +216,7 @@ class _ImagesPageState extends State<ImagesPage> {
     );
   }
 
-  Widget buildLikesAndComments() {
+  Widget buildLikesAndComments(Map<String, dynamic> post) {
     return Padding(
       padding: const EdgeInsets.only(left: 15, right: 15),
       child: Row(
@@ -206,7 +224,7 @@ class _ImagesPageState extends State<ImagesPage> {
         children: [
           Text(
             'View all comments (${random.nextInt(500)})',
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black54,
               fontSize: 15,
               fontWeight: FontWeight.w500,

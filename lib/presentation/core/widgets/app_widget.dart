@@ -17,7 +17,7 @@ class _AppWidgetState extends State<AppWidget> {
   final List<Widget> _pages = [
     WeatherOverviewPage(),
     ImagesPage(),
-    SettingsPage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -49,8 +49,8 @@ class _AppWidgetState extends State<AppWidget> {
             icon: Icon(Icons.image_aspect_ratio_outlined),
           ),
           BottomNavigationBarItem(
-            label: 'Settings',
-            icon: Icon(Icons.settings_outlined),
+            label: 'More',
+            icon: Icon(Icons.more_horiz_outlined),
           ),
         ],
       ),
